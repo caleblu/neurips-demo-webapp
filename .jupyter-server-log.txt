@@ -62,3 +62,6 @@ not able to serialize: expected string or bytes-like object
 TermSocket.open: Opened 2
 [W 21:32:40.864 NotebookApp] Culling 'idle' kernel 'python3' (a2edd0e0-5d72-4e4f-82bb-248c75a2b7b9) with 2 connections due to 646 seconds of inactivity.
 [I 21:32:40.865 NotebookApp] Kernel shutdown: a2edd0e0-5d72-4e4f-82bb-248c75a2b7b9
+[I 21:50:06.890 NotebookApp] Saving file at /demo.ipynb
+[I 21:50:10.011 NotebookApp] Saving file at /demo.ipynb
+[I 21:50:10.196 NotebookApp] Saving file at /demo.ipynb
