@@ -1,34 +1,36 @@
 from __future__ import print_function
 from ipywidgets import interact, interactive, fixed, interact_manual
 import ipywidgets as widgets
-from IPython.display import display
-import matplotlib.pyplot as plt
-import matplotlib.image as mpimg
-import numpy as np
-import tensorflow as tf
-
-from tensorflow.keras.layers import Activation
-from tensorflow.keras.layers import Conv2D
-from tensorflow.keras.layers import Dense
-from tensorflow.keras.layers import Flatten
-from tensorflow.keras.layers import Input
-from tensorflow.keras.layers import MaxPooling2D
-from tensorflow.keras.losses import SparseCategoricalCrossentropy
-from tensorflow.keras.models import load_model
-from tensorflow.keras.models import Model
 from IPython.display import display, Image
 
-from trulens.nn.attribution import InternalInfluence
-from trulens.nn.models import get_model_wrapper
-from trulens.visualizations import ChannelMaskVisualizer
-from trulens.visualizations import HeatmapVisualizer
-from trulens.visualizations import Tiler
+USE_CACHED = True
+if not USE_CACHED:
+    import matplotlib.pyplot as plt
+    import matplotlib.image as mpimg
+    import numpy as np
+    import tensorflow as tf
 
-tf.keras.backend.set_image_data_format('channels_last')
+    from tensorflow.keras.layers import Activation
+    from tensorflow.keras.layers import Conv2D
+    from tensorflow.keras.layers import Dense
+    from tensorflow.keras.layers import Flatten
+    from tensorflow.keras.layers import Input
+    from tensorflow.keras.layers import MaxPooling2D
+    from tensorflow.keras.losses import SparseCategoricalCrossentropy
+    from tensorflow.keras.models import load_model
+    from tensorflow.keras.models import Model
 
-# Allow memory growth to avoid tensorflow taking all the RAM.
-for device in tf.config.experimental.get_visible_devices('GPU'):
-    tf.config.experimental.set_memory_growth(device, True)
+    from trulens.nn.attribution import InternalInfluence
+    from trulens.nn.models import get_model_wrapper
+    from trulens.visualizations import ChannelMaskVisualizer
+    from trulens.visualizations import HeatmapVisualizer
+    from trulens.visualizations import Tiler
+
+    tf.keras.backend.set_image_data_format('channels_last')
+
+    # Allow memory growth to avoid tensorflow taking all the RAM.
+    for device in tf.config.experimental.get_visible_devices('GPU'):
+        tf.config.experimental.set_memory_growth(device, True)
 
 
 def load_lfw_data(include_pink=True):
@@ -112,11 +114,6 @@ def visualize_lfw(keras_model_name,
                   use_cached,
                   layer=4,
                   visualizer_name='heatmap'):
-
-    keras_model = keras_model_name_dict[keras_model_name]
-    model = model_wrapper_name_dict[keras_model_name]
-    instance = data_name_dict[instance_name]
-    predicted_class = plot_prediction(keras_model, instance)
     if use_cached:
         show_image('cached_images/{}_{}_original.jpg'.format(
             keras_model_name, instance_name))
@@ -124,6 +121,10 @@ def visualize_lfw(keras_model_name,
                                                        instance_name,
                                                        visualizer_name))
     else:
+        keras_model = keras_model_name_dict[keras_model_name]
+        model = model_wrapper_name_dict[keras_model_name]
+        instance = data_name_dict[instance_name]
+        predicted_class = plot_prediction(keras_model, instance)
         plt.axis('off')
         plt.imshow(Tiler().tile(instance))
         plt.title('Original Image, Predicted class: {}'.format(' '.join(
@@ -176,30 +177,30 @@ def visualize_lfw(keras_model_name,
             keras_model_name, instance_name, visualizer_name))
         plt.show()
 
+if not USE_CACHED:
+    all_data, x_train, y_train, x_test, y_test = load_lfw_data()
 
-all_data, x_train, y_train, x_test, y_test = load_lfw_data()
+    data_name_dict = {
+        'Tony_Blair': all_data['pink_in_tr'],
+        'Gerhard_Schroeder': all_data['gerhard'],
+        'Gerhard_Schroeder_Edited': all_data['gerhard_edited']
+    }
+    keras_model = load_model('resources/model_with_pink.h5')
+    keras_model_no_pink = load_model('resources/model_no_pink.h5')
+    keras_model_name_dict = {'Pink': keras_model, 'No_Pink': keras_model_no_pink}
 
-data_name_dict = {
-    'Tony_Blair': all_data['pink_in_tr'],
-    'Gerhard_Schroeder': all_data['gerhard'],
-    'Gerhard_Schroeder_Edited': all_data['gerhard_edited']
-}
-keras_model = load_model('resources/model_with_pink.h5')
-keras_model_no_pink = load_model('resources/model_no_pink.h5')
-keras_model_name_dict = {'Pink': keras_model, 'No_Pink': keras_model_no_pink}
+    model_wrapper = get_model_wrapper(keras_model)
+    model_wrapper_no_pink = get_model_wrapper(keras_model_no_pink)
+    model_wrapper_name_dict = {
+        'Pink': model_wrapper,
+        'No_Pink': model_wrapper_no_pink
+    }
 
-model_wrapper = get_model_wrapper(keras_model)
-model_wrapper_no_pink = get_model_wrapper(keras_model_no_pink)
-model_wrapper_name_dict = {
-    'Pink': model_wrapper,
-    'No_Pink': model_wrapper_no_pink
-}
-
-keras_model = load_model('resources/model_with_pink.h5')
-keras_model_no_pink = load_model('resources/model_no_pink.h5')
+    keras_model = load_model('resources/model_with_pink.h5')
+    keras_model_no_pink = load_model('resources/model_no_pink.h5')
 
 
-def display_demo(use_cached=False):
+def display_demo(use_cached=USE_CACHED):        
     model_widget = widgets.Select(
         options=['Pink', 'No_Pink'],
         value='Pink',
