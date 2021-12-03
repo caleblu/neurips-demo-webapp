@@ -1,5 +1,5 @@
 {
-  "base_url": "/user/caleblu-neurips-demo-webapp-jeg22kxu/",
+  "base_url": "/user/caleblu-neurips-demo-webapp-aeqa8edf/",
   "hostname": "0.0.0.0",
   "notebook_dir": "/home/jovyan",
   "password": false,
@@ -7,6 +7,6 @@
   "port": 8888,
   "secure": false,
   "sock": "",
-  "token": "i93VDwuQQFaggfx8R84tNw",
-  "url": "http://0.0.0.0:8888/user/caleblu-neurips-demo-webapp-jeg22kxu/"
+  "token": "gyHU_R-HRLGFFPQknerZrA",
+  "url": "http://0.0.0.0:8888/user/caleblu-neurips-demo-webapp-aeqa8edf/"
 }
